@@ -98,23 +98,23 @@ class MyLogisticRegression:
         assert self.model_logistic is not None, "Initialize the model, i.e. instantiate the variable self.model_logistic in model_fit_logistic method"
         assert self.training_set is not None, "self.read_csv function isn't called or the self.trianing_set hasn't been initialized "
 
+        y_pred_continuous = None
+        y_pred = None
         if self.X_test is not None:
-            #Test for True Positives...
-            tp = None
-            #Test for False Positives...
-            fp = None
-            #Test for True Negatives...
-            tn = None
-            #Test for False Negatives...
-            fn = None
+            # perform prediction here
+            y_pred_continuous = self.model_logistic.predict(self.X_test)
+            y_pred = np.where(y_pred_continuous > 0.5, 1, 0)
 
-            #Compute Precision
-            precision = tp / (tp + fp)
-            # Compute Recall
-            recall = tp / (tp + fn)
-            # Compute F1 Score
-            f1 = 2 * ((precision * recall) / (precision + recall))
-            # Compute Support (# of occurances of call in data set)
+            accuracy = accuracy_score(self.y_test, y_pred)
+
+            precision, recall, f1, support = precision_recall_fscore_support(self.y_test, y_pred, average=None)
+
+            precision = np.array(precision)
+            recall = np.array(recall)
+            f1 = np.array(f1)
+            support = np.array(support)
+        # else:
+        #     print('FUCK1')
 
         
         assert precision.shape == recall.shape == f1.shape == support.shape == (2,), "precision, recall, f1, support should be an array of shape (2,)"
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     classifier = MyLogisticRegression(args.dataset_num, args.perform_test)
     acc = classifier.model_predict_linear()
-    print(f"LINEAR REGRESSION STATS:\n{acc}")
+    # print(f"LINEAR REGRESSION STATS:\n{acc}")
     acc = classifier.model_predict_logistic()
-    print(f"LOGISTIC REGRESSION STATS:\n{acc}")
+    # print(f"LOGISTIC REGRESSION STATS:\n{acc}")
     
